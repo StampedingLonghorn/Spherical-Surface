@@ -1,0 +1,210 @@
+<html>
+    <head>
+        <title>
+            Distance on a Spherical Surface
+        </title>
+        <style>
+            body {
+                font-family: sans-serif;
+            }
+            input {
+                text-align: right;
+            }
+        </style>
+    </head>
+    <body>
+        <form name="sphere">
+            <fieldset>
+                <legend><strong>Distance on a Spherical Surface</strong></legend>
+                <table>
+                    <thead>
+                        <td>
+                        </td>
+                        <td>
+                            Latitude
+                        </td>
+                        <td>
+                            Longitude
+                        </td>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                Point A
+                            </td>
+                            <td>
+                                <input id="latA" type=text> °
+                            </td>
+                            <td>
+                                <input id="lonA" type=text> °
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Point B
+                            </td>
+                            <td>
+                                <input id="latB" type=text> °
+                            </td>
+                            <td>
+                                <input id="lonB" type=text> °
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Spherical Radius
+                            </td>
+                            <td>
+                                <input id="radius" type=text>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input id="calc" type=button value="Calculate" onclick="dist();">
+                            </td>
+                            <td>
+                                <input type=reset value="Reset">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Distance
+                            </td>
+                            <td>
+                                <input id="distance" type=text>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Initial Bearing
+                            </td>
+                            <td>
+                                <input id="bearing" type=text> °
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                or
+                            </td>
+                            <td>
+                                <input id="bearing2" type=text> °
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+        </form>
+        <form>
+            <fieldset>
+                <legend><strong>Distance per unit of Longitude</strong></legend>
+                <table>
+                    <tr>
+                        <td>
+                            What is the latitude?
+                        </td>
+                        <td>
+                            <input id="latitude" type=text> °
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            What is the circumference?
+                        </td>
+                        <td>
+                            <input id="circum" type=text>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="latCalc" type=button value="Calculate" onclick="lat();">
+                        </td>
+                        <td>
+                            <input type=reset value="Reset">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Distance per Degree
+                        </td>
+                        <td>
+                            <input id="deg" type=text>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Distance per Minute
+                        </td>
+                        <td>
+                            <input id="min" type=text>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Distance per Second
+                        </td>
+                        <td>
+                            <input id="sec" type=text>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Radius at Latitude
+                        </td>
+                        <td>
+                            <input id="rad" type=text>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Circumference at Latitude
+                        </td>
+                        <td>
+                            <input id="cir" type=text>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </form>
+        
+        <script>
+            function dist() {
+                var latA = parseFloat(document.getElementById('latA').value);
+                var lonA = parseFloat(document.getElementById('lonA').value);
+                var latB = parseFloat(document.getElementById('latB').value);
+                var lonB = parseFloat(document.getElementById('lonB').value);
+                var radius = parseFloat(document.getElementById('radius').value);
+                
+                var a = Math.abs(lonA - lonB) * Math.PI / 180;
+                var b = Math.abs(90 - latB) * Math.PI / 180;
+                var c = Math.abs(90 - latA) * Math.PI / 180;
+                
+                /* Distance formula */
+                var distance = Math.acos(Math.cos(b) * Math.cos(c) + Math.sin(b) * Math.sin(c) * Math.cos(a));
+                var radius = distance * radius;
+                document.getElementById('distance').value = Math.round(radius);
+                
+                /* Initial Bearing formula */
+                var bearing = Math.asin(Math.sin(b) * Math.sin(a) / Math.sin(distance)) * 180 / Math.PI;
+                document.getElementById('bearing').value = Math.round(bearing);
+                document.getElementById('bearing2').value = 360 - Math.round(bearing);
+            }
+            
+            function lat() {
+                var latitude = parseFloat(document.getElementById('latitude').value) * Math.PI / 180;
+                var circum = parseFloat(document.getElementById('circum').value);
+                
+                var lonDeg = circum / 360 * Math.cos(latitude);
+                var lonMin = lonDeg / 60;
+                var lonSec = lonMin / 60;
+                var circumference = circum * Math.cos(latitude);
+                var rad = circumference / Math.PI / 2;
+                
+                document.getElementById('deg').value = lonDeg.toFixed(2);
+                document.getElementById('min').value = lonMin.toFixed(2);
+                document.getElementById('sec').value = lonSec.toFixed(2);
+                document.getElementById('rad').value = Math.round(rad);
+                document.getElementById('cir').value = Math.round(circumference);
+            }
+        </script>
+    </body>
+</html>
